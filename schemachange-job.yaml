@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: schemachange-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: schemachange
+        image: vaccine89/schemachange:latest
+        command: ["sh", "-c", "schemachange -f scripts/*/*.sql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -p $SNOWFLAKE_PASSWORD"]
+        env:
+        - name: SNOWFLAKE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name: snowflake-secret
+              key: account
+        - name: SNOWFLAKE_USER
+          valueFrom:
+            secretKeyRef:
+              name: snowflake-secret
+              key: user
+        - name: SNOWFLAKE_ROLE
+          valueFrom:
+            secretKeyRef:
+              name: snowflake-secret
+              key: role
+        - name: SNOWFLAKE_WAREHOUSE
+          valueFrom:
+            secretKeyRef:
+              name: snowflake-secret
+              key: warehouse
+        - name: SNOWFLAKE_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: snowflake-secret
+              key: database
+        - name: SNOWFLAKE_SCHEMA
+          valueFrom:
+            secretKeyRef:
+              name: snowflake-secret
+              key: schema
+        - name: SNOWFLAKE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: snowflake-secret
+              key: password
+      restartPolicy: Never
+  backoffLimit: 4

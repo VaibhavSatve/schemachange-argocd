@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: schemachange-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/VaibhavSatve/schemachange-argocd.git'
+    targetRevision: HEAD
+    path: .
+  destination:
+    server: 'https://BAB29D99B5A780BE5145E6DF895FFF71.gr7.us-east-1.eks.amazonaws.com'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
